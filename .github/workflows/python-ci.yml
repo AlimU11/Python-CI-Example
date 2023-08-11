@@ -28,7 +28,7 @@ jobs:
 
       - name: Set Poetry environment
         run: |
-          poetry env use python{{ matrix.python-version }}
+          poetry env use python${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
