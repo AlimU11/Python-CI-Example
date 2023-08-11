@@ -1,0 +1,89 @@
+default_stages: [commit]
+
+default_language_version:
+  python: python3.10
+
+repos:
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=2048']
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: double-quote-string-fixer
+      - id: requirements-txt-fixer
+
+  - repo: local
+    hooks:
+
+    - id: autoflake
+      name: autoflake
+      entry: autoflake
+      language: python
+      "types": [ python ]
+      require_serial: true
+      args: [
+          --in-place,
+          --expand-star-imports,
+          --remove-duplicate-keys,
+          --remove-unused-variables,
+        ]
+
+    - id: isort
+      entry: isort
+      language: python
+      args: [
+        --profile,
+        black,
+        --filter-files
+      ]
+      name: isort (python)
+
+    - id: add-trailing-comma
+      name: add-trailing-comma
+      entry: add-trailing-comma
+      language: python
+
+    - id: black
+      name: black
+      entry: black
+      language: python
+      args: [
+        --skip-string-normalization,
+        --line-length=120,
+        --target-version=py310
+      ]
+      exclude: ^(venv/|docs/)
+      types: ['python']
+
+    - id: unify
+      name: unify
+      entry: unify
+      language: python
+      args: [
+        --in-place,
+        --recursive,
+      ]
+      exclude: ^(venv/|docs/)
+      types: [ 'python' ]
+
+    - id: mypy
+      name: mypy
+      entry: mypy
+      language: python
+      'types_or': [python, pyi]
+      args: ["--ignore-missing-imports", "--scripts-are-modules"]
+      require_serial: true
+      additional_dependencies: []
+      minimum_pre_commit_version: '2.9.2'
+
+    - id: flake8
+      name: flake8
+      description: wemake-python-styleguide enforcement
+      entry: flake8
+      args: ["--config=setup.cfg"]
+      language: python
+      types: [python]
